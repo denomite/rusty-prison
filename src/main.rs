@@ -1,6 +1,3 @@
-// CORE FEATURES
-// CLI prompts to enter: Prisoner ID, Name, Lastname, Height & Weight, Criminal record
-// Save as JSON, load back and display
 use serde::{Deserialize, Serialize};
 use std::io::{self, BufReader};
 
@@ -123,6 +120,31 @@ fn search_prisoner(prisoners: &[Prisoner]) {
         }
     }
 }
+
+fn delete_prisoner(prisoners: &mut Vec<Prisoner>) {
+    let input = read_line("Enter the ID of the prisoner to delete: ");
+
+    match input.trim().parse::<i32>() {
+        Ok(id) => {
+            let index = prisoners.iter().position(|p| p.id == id);
+
+            match index {
+                Some(i) => {
+                    let p = &prisoners[i];
+                    println!(
+                        "🗑️ Deleting prisoner: {} {}, ID: {}",
+                        p.first_name, p.last_name, p.id
+                    );
+                    prisoners.remove(i);
+                    println!("✅ Prisoner deleted.");
+                }
+                None => println!("❌ No prisoner found with ID {}", id),
+            }
+        }
+        Err(_) => println!("⚠️ Invalid ID input."),
+    }
+}
+
 fn main() -> std::io::Result<()> {
     let mut prisoners: Vec<Prisoner> = Vec::new();
 
@@ -133,8 +155,8 @@ fn main() -> std::io::Result<()> {
         println!("[3] Save to file");
         println!("[4] Load from file");
         println!("[5] Seach prisoner");
-        println!("[6] Exit");
-
+        println!("[6] Deleting prisoner");
+        println!("[7] Exit");
         println!("Enter your choice: ");
 
         let mut choice = String::new();
@@ -158,7 +180,8 @@ fn main() -> std::io::Result<()> {
                 println!("Loaded {} prisoner(s) from file.", prisoners.len());
             }
             "5" => search_prisoner(&prisoners),
-            "6" => {
+            "6" => delete_prisoner(&mut prisoners),
+            "7" => {
                 println!("Exiting...");
                 break;
             }
