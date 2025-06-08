@@ -9,9 +9,9 @@ struct Prisoner {
     id: i32,
     first_name: String,
     last_name: String,
-    // height_cm: f64,
-    // weight_kg: f64,
-    // criminal_record: String,
+    height_cm: f64,
+    weight_kg: f64,
+    criminal_record: String,
 }
 
 fn read_line(prompt: &str) -> String {
@@ -71,10 +71,33 @@ fn input_prisoner() -> Prisoner {
     let first_name = read_names("Enter prisoner name: ");
     let last_name = read_names("Enter prisoner lastname: ");
 
+    let height_cm = loop {
+        let input = read_line("Enter height (cm): ");
+        if let Ok(h) = input.parse::<f64>() {
+            break h;
+        } else {
+            println!("Invalid height, try again.");
+        }
+    };
+
+    let weight_kg = loop {
+        let input = read_line("Enter weight (kg): ");
+        if let Ok(w) = input.parse::<f64>() {
+            break w;
+        } else {
+            println!("Invalid weight, try again.");
+        }
+    };
+
+    let criminal_record = read_line("Enter criminal record description: ");
+
     Prisoner {
         id,
         first_name,
         last_name,
+        height_cm,
+        weight_kg,
+        criminal_record,
     }
 }
 fn main() -> std::io::Result<()> {
