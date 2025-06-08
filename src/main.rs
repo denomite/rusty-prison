@@ -145,6 +145,12 @@ fn delete_prisoner(prisoners: &mut Vec<Prisoner>) {
     }
 }
 
+fn list_prisoners(prisoners: &[Prisoner]) {
+    for (i, p) in prisoners.iter().enumerate() {
+        println!("\n#{}: {:?}\n", i + 1, p);
+    }
+}
+
 fn main() -> std::io::Result<()> {
     let mut prisoners: Vec<Prisoner> = Vec::new();
 
@@ -164,11 +170,7 @@ fn main() -> std::io::Result<()> {
 
         match choice.trim() {
             "1" => prisoners.push(input_prisoner()),
-            "2" => {
-                for (i, p) in prisoners.iter().enumerate() {
-                    println!("\n#{}: {:?}\n", i + 1, p);
-                }
-            }
+            "2" => list_prisoners(&prisoners),
             "3" => {
                 let json_data = serde_json::to_string(&prisoners).unwrap();
                 std::fs::write("prisoners.json", json_data)?;
@@ -181,10 +183,7 @@ fn main() -> std::io::Result<()> {
             }
             "5" => search_prisoner(&prisoners),
             "6" => delete_prisoner(&mut prisoners),
-            "7" => {
-                println!("Exiting...");
-                break;
-            }
+            "7" => break,
             _ => println!("Invalid option, please try again."),
         }
     }
