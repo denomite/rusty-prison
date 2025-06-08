@@ -100,6 +100,29 @@ fn input_prisoner() -> Prisoner {
         criminal_record,
     }
 }
+
+fn search_prisoner(prisoners: &[Prisoner]) {
+    let query = read_line("Enter prisoner ID or name to search: ")
+        .trim()
+        .to_lowercase();
+
+    let mut found = false;
+    for p in prisoners {
+        if p.id.to_string() == query || p.first_name.to_lowercase().contains(&query) {
+            println!("🔍 Found prisoner: ");
+            println!(
+                "ID: {}, Name: {} {}, Height: {}, Weight: {}, Criminal record: {}",
+                p.id, p.first_name, p.last_name, p.height_cm, p.height_cm, p.criminal_record
+            );
+
+            found = true;
+        }
+
+        if !found {
+            println!("❌ No matching prisoner found.");
+        }
+    }
+}
 fn main() -> std::io::Result<()> {
     let mut prisoners: Vec<Prisoner> = Vec::new();
 
@@ -109,7 +132,8 @@ fn main() -> std::io::Result<()> {
         println!("[2] List prisoners");
         println!("[3] Save to file");
         println!("[4] Load from file");
-        println!("[5] Exit");
+        println!("[5] Seach prisoner");
+        println!("[6] Exit");
 
         println!("Enter your choice: ");
 
@@ -117,12 +141,7 @@ fn main() -> std::io::Result<()> {
         io::stdin().read_line(&mut choice).unwrap();
 
         match choice.trim() {
-            "1" => {
-                println!("Adding prisoner");
-
-                let p = input_prisoner();
-                prisoners.push(p);
-            }
+            "1" => prisoners.push(input_prisoner()),
             "2" => {
                 for (i, p) in prisoners.iter().enumerate() {
                     println!("\n#{}: {:?}\n", i + 1, p);
@@ -138,7 +157,8 @@ fn main() -> std::io::Result<()> {
                 prisoners = serde_json::from_str(&file_data).unwrap();
                 println!("Loaded {} prisoner(s) from file.", prisoners.len());
             }
-            "5" => {
+            "5" => search_prisoner(&prisoners),
+            "6" => {
                 println!("Exiting...");
                 break;
             }
