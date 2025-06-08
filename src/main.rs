@@ -2,7 +2,7 @@
 // CLI prompts to enter: Prisoner ID, Name, Lastname, Height & Weight, Criminal record
 // Save as JSON, load back and display
 use serde::{Deserialize, Serialize};
-use std::io;
+use std::io::{self, BufReader};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Prisoner {
@@ -37,17 +37,40 @@ fn read_names(prompt: &str) -> String {
     }
 }
 
+fn load_prisoners_from_file(path: &str) -> Vec<Prisoner> {
+    if let Ok(file) = std::fs::File::open(path) {
+        let reader = BufReader::new(file);
+        serde_json::from_reader(reader).unwrap_or_default()
+    } else {
+        vec![]
+    }
+}
+
+fn id_exists(id: i32, prisoners: &[Prisoner]) -> bool {
+    prisoners.iter().any(|p| p.id == id)
+}
+
 fn input_prisoner() -> Prisoner {
+    let path = "prisoners.json";
+    let prisoners = load_prisoners_from_file(path);
+
     let id: i32 = loop {
         let input = read_line("Enter prisoner number: ");
-        match input.parse::<i32>() {
-            Ok(n) => break n,
-            Err(_) => println!("Invalid number '{}', try again.", input),
+        match input.trim().parse::<i32>() {
+            Ok(n) => {
+                if id_exists(n, &prisoners) {
+                    println!("ID {} already exist. Try another.", n);
+                } else {
+                    break n;
+                }
+            }
+            Err(_) => println!("Invalid number '{}', try again.", input.trim()),
         }
     };
 
     let first_name = read_names("Enter prisoner name: ");
     let last_name = read_names("Enter prisoner lastname: ");
+
     Prisoner {
         id,
         first_name,
