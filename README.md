@@ -10,7 +10,7 @@ Core features:
     4.Simple menu & clean code structure ✅
     5.Add search: search by name or id ✅
     6.Deleting a prisoner by id ✅
-    7.Add terminal colors using colored
+    7.Add terminal colors using colored✅
     8.Add filter: show only prisoner over X height/Weight or with crimes including a keyword
     9.CLI argument support(using clap for argument parsing)
     10.Serialize into multiple formats: json, csv, toml
