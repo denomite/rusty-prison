@@ -27,7 +27,7 @@ fn read_line(prompt: &str) -> String {
 */
 pub fn list_prisoners(prisoners: &[Prisoner]) {
     println!("Choose: ");
-    println!("[1] Current prisoners");
+    println!("[1] Unsaved prisoner/prisoners");
     println!("[2] Prisoners saved in file");
 
     let mut choice = String::new();
@@ -141,20 +141,9 @@ pub fn save_prisoner(prisoners: &[Prisoner]) {
 }
 
 /*
-    LOAD PRISONER FROM FILE
+    LOAD FROM FILE
 */
-pub fn load_from_file() {
-    match std::fs::read_to_string("prisoners.json") {
-        Ok(file_data) => match serde_json::from_str::<Vec<Prisoner>>(&file_data) {
-            Ok(prisoners) => eprintln!(
-                "{}",
-                format!("Loaded {} prisoner(s) from file.", prisoners.len()).green()
-            ),
-            Err(e) => eprintln!("{}", format!("Failed to parse JSON: {}", e).red()),
-        },
-        Err(e) => eprintln!("{}", format!("Failed to read file: {}", e).red()),
-    }
-}
+
 fn load_prisoners_from_file(path: &str) -> Vec<Prisoner> {
     if let Ok(file) = std::fs::File::open(path) {
         let reader = BufReader::new(file);

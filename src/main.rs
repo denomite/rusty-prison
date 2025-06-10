@@ -30,10 +30,9 @@ fn main() -> std::io::Result<()> {
             "1" => prisoners.push(input_prisoner()),
             "2" => list_prisoners(&prisoners),
             "3" => save_prisoner(&prisoners),
-            "4" => load_from_file(),
-            "5" => search_prisoner(&prisoners),
-            "6" => delete_prisoner(&mut prisoners),
-            "7" => break,
+            "4" => search_prisoner(&prisoners),
+            "5" => delete_prisoner(&mut prisoners),
+            "6" => break,
             _ => println!("Invalid option, please try again."),
         }
     }
