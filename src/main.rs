@@ -2,12 +2,15 @@ mod prisoner;
 
 use prisoner::*;
 use std::io;
+use std::io::{Write, stdout};
 
 fn main() -> std::io::Result<()> {
     let mut prisoners: Vec<Prisoner> = Vec::new();
 
     loop {
-        println!("#rusty-prison");
+        println!("\n");
+        println!("Rusty Prsion");
+        println!("\n");
         println!("[1] Add prisoner");
         println!("[2] List prisoners");
         println!("[3] Save to file");
@@ -15,7 +18,10 @@ fn main() -> std::io::Result<()> {
         println!("[5] Seach prisoner");
         println!("[6] Deleting prisoner");
         println!("[7] Exit");
-        println!("Enter your choice: ");
+        println!("\n");
+
+        print!("Enter your choice: ");
+        stdout().flush().unwrap();
 
         let mut choice = String::new();
         io::stdin().read_line(&mut choice).unwrap();
@@ -23,16 +29,8 @@ fn main() -> std::io::Result<()> {
         match choice.trim() {
             "1" => prisoners.push(input_prisoner()),
             "2" => list_prisoners(&prisoners),
-            "3" => {
-                let json_data = serde_json::to_string(&prisoners).unwrap();
-                std::fs::write("prisoners.json", json_data)?;
-                println!("Saved to prisoners.json");
-            }
-            "4" => {
-                let file_data = std::fs::read_to_string("prisoners.json")?;
-                prisoners = serde_json::from_str(&file_data).unwrap();
-                println!("Loaded {} prisoner(s) from file.", prisoners.len());
-            }
+            "3" => save_prisoner(&prisoners),
+            "4" => load_from_file(),
             "5" => search_prisoner(&prisoners),
             "6" => delete_prisoner(&mut prisoners),
             "7" => break,

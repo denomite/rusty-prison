@@ -1,1 +1,10 @@
-[{"id":1,"first_name":"Bob","last_name":"Marko","height_cm":174.0,"weight_kg":85.0,"criminal_record":"drug offences"}]
+[
+    {
+        "id": 1,
+        "first_name": "John",
+        "last_name": "Hog",
+        "height_cm": 124.0,
+        "weight_kg": 52.0,
+        "criminal_record": "theft"
+    }
+]
