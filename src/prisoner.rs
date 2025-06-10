@@ -26,10 +26,33 @@ fn read_line(prompt: &str) -> String {
     LIST PRISONERS
 */
 pub fn list_prisoners(prisoners: &[Prisoner]) {
-    for (i, p) in prisoners.iter().enumerate() {
-        println!("\n#{}: {:?}\n", i + 1, p);
+    println!("Choose: ");
+    println!("[1] Current prisoners");
+    println!("[2] Prisoners saved in file");
+
+    let mut choice = String::new();
+    io::stdin().read_line(&mut choice).unwrap();
+
+    match choice.trim() {
+        "1" => {
+            for (i, p) in prisoners.iter().enumerate() {
+                println!("\n#{}: {:?}\n", i + 1, p);
+            }
+        }
+        "2" => {
+            let file_prisoners = load_prisoners_from_file("prisoners.json");
+            if file_prisoners.is_empty() {
+                println!("{}", "No prisoners found in file".yellow());
+            } else {
+                for (i, p) in file_prisoners.iter().enumerate() {
+                    println!("\n#{}: {:?}\n", i + 1, p);
+                }
+            }
+        }
+        _ => println!("Invalid option, please try again"),
     }
 }
+
 /*
     ADD PRISONER
 */
