@@ -2,7 +2,7 @@ use colored::Colorize;
 use serde::{Deserialize, Serialize};
 use std::io::{self, BufReader, Write, stdout};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Prisoner {
     id: i32,
     first_name: String,
@@ -25,46 +25,29 @@ fn read_line(prompt: &str) -> String {
 /*
     LIST PRISONERS
 */
-pub fn list_prisoners(prisoners: &[Prisoner]) {
-    println!("Choose: ");
-    println!("[1] Unsaved prisoner/prisoners");
-    println!("[2] Prisoners saved in file");
+pub fn list_prisoners() {
+    println!("\n");
+    println!("List of prisoners in file");
 
-    let mut choice = String::new();
-    io::stdin().read_line(&mut choice).unwrap();
-
-    match choice.trim() {
-        "1" => {
-            for (i, p) in prisoners.iter().enumerate() {
-                println!("\n#{}: {:?}\n", i + 1, p);
-            }
+    let file_prisoners = load_prisoners_from_file("prisoners.json");
+    if file_prisoners.is_empty() {
+        println!("{}", "No prisoners found in file".yellow());
+    } else {
+        for (i, p) in file_prisoners.iter().enumerate() {
+            println!("\n#{}: {:?}\n", i + 1, p);
         }
-        "2" => {
-            let file_prisoners = load_prisoners_from_file("prisoners.json");
-            if file_prisoners.is_empty() {
-                println!("{}", "No prisoners found in file".yellow());
-            } else {
-                for (i, p) in file_prisoners.iter().enumerate() {
-                    println!("\n#{}: {:?}\n", i + 1, p);
-                }
-            }
-        }
-        _ => println!("Invalid option, please try again"),
     }
 }
 
 /*
     ADD PRISONER
 */
-pub fn input_prisoner() -> Prisoner {
-    let path = "prisoners.json";
-    let prisoners = load_prisoners_from_file(path);
-
+pub fn input_prisoner(prisoners: &[Prisoner]) -> Prisoner {
     let id: i32 = loop {
         let input = read_line("Enter prisoner number: ");
         match input.trim().parse::<i32>() {
             Ok(n) => {
-                if id_exists(n, &prisoners) {
+                if id_exists(n, prisoners) {
                     println!("ID {} already exist. Try another.", n);
                 } else {
                     break n;
@@ -82,16 +65,16 @@ pub fn input_prisoner() -> Prisoner {
         if let Ok(h) = input.parse::<f64>() {
             break h;
         } else {
-            println!("        Invalid height, try again.");
+            println!("Invalid height, try again.");
         }
     };
 
     let weight_kg = loop {
-        let input = read_line("        Enter weight (kg): ");
+        let input = read_line("Enter weight (kg): ");
         if let Ok(w) = input.parse::<f64>() {
             break w;
         } else {
-            println!("        Invalid weight, try again.");
+            println!("Invalid weight, try again.");
         }
     };
 
@@ -144,7 +127,7 @@ pub fn save_prisoner(prisoners: &[Prisoner]) {
     LOAD FROM FILE
 */
 
-fn load_prisoners_from_file(path: &str) -> Vec<Prisoner> {
+pub fn load_prisoners_from_file(path: &str) -> Vec<Prisoner> {
     if let Ok(file) = std::fs::File::open(path) {
         let reader = BufReader::new(file);
         serde_json::from_reader(reader).unwrap_or_default()

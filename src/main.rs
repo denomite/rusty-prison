@@ -5,19 +5,19 @@ use std::io;
 use std::io::{Write, stdout};
 
 fn main() -> std::io::Result<()> {
-    let mut prisoners: Vec<Prisoner> = Vec::new();
+    let mut prisoners: Vec<Prisoner> = prisoner::load_prisoners_from_file("prisoners.json");
 
     loop {
         println!("\n");
-        println!("Rusty Prsion");
-        println!("\n");
+        println!("############");
+        println!("Rusty Prison");
+        println!("############\n");
         println!("[1] Add prisoner");
         println!("[2] List prisoners");
         println!("[3] Save to file");
-        println!("[4] Load from file");
-        println!("[5] Seach prisoner");
-        println!("[6] Deleting prisoner");
-        println!("[7] Exit");
+        println!("[4] Seach prisoner");
+        println!("[5] Deleting prisoner");
+        println!("[6] Exit");
         println!("\n");
 
         print!("Enter your choice: ");
@@ -27,8 +27,8 @@ fn main() -> std::io::Result<()> {
         io::stdin().read_line(&mut choice).unwrap();
 
         match choice.trim() {
-            "1" => prisoners.push(input_prisoner()),
-            "2" => list_prisoners(&prisoners),
+            "1" => prisoners.push(input_prisoner(&prisoners)),
+            "2" => list_prisoners(),
             "3" => save_prisoner(&prisoners),
             "4" => search_prisoner(&prisoners),
             "5" => delete_prisoner(&mut prisoners),
